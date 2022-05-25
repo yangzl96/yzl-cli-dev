@@ -5,9 +5,9 @@
   "author": "ex-yangzl <exyangzl@szca.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "lib/core.js",
+  "main": "lib/index.js",
   "bin": {
-    "yzl-cli-dev": "bin/index"
+    "yzl-cli-dev": "bin/index.js"
   },
   "directories": {
     "lib": "lib",
@@ -22,5 +22,14 @@
   "gitHead": "027d046fb42ae38702f2489cd50130624c9507e3",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@yzl-cli-dev/log": "file:../../utils/log",
+    "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "colors": "^1.4.0",
+    "import-local": "^3.1.0",
+    "npmlog": "^6.0.2",
+    "root-check": "1.0.0",
+    "semver": "^7.3.7"
   }
 }
