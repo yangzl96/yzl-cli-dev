@@ -1,7 +1,5 @@
 'use strict';
 
-module.exports = core;
-
 const path = require('path')
 const semver = require('semver')
 const colors = require('colors')
@@ -13,21 +11,27 @@ const log = require('@yzl-cli-dev/log')
 const init = require('@yzl-cli-dev/init')
 const constant = require('./const')
 
-// 参数
-let args
-
 // 实例化一个command 脚手架对象
 const program = new commander.Command()
 
 async function core() {
   try {
-    // checkInputArgs()
-    checkEnv()
-    await checkGlobalUpdate()
+    // 初始化准备 
+    prepare()
+    // 命令注册
     registerCommand()
   } catch (error) {
     log.error(error.message)
   }
+}
+
+async function prepare() {
+  checkPkgVersion()
+  checkNodeVersion()
+  checkRoot()
+  checkUserHome()
+  checkEnv()
+  await checkGlobalUpdate()
 }
 
 // 检查版本号
@@ -72,24 +76,6 @@ function checkUserHome() {
   }
 }
 
-// 检查入参
-function checkInputArgs() {
-  const minimist = require('minimist')
-  args = minimist(process.argv.slice(2))
-  checkArgs()
-}
-
-function checkArgs() {
-  if (args.debug) {
-    // 如果存在 yzl-cli-dev --debug 那么改变日志的level
-    // 让verbosek级别的可以输出日志
-    process.env.LOG_LEVEL = 'verbose'
-  } else {
-    process.env.LOG_LEVEL = 'info'
-  }
-  log.level = process.env.LOG_LEVEL
-}
-
 // 环境变量检查
 // 匹配 .env文件，方便读取里面的内容，做一些本地的缓存
 // 存在的话，会被默认注入到 process.env中
@@ -107,7 +93,7 @@ function checkEnv() {
     })
   }
   createDefaultConfig()
-  log.verbose('环境变量', process.env.CLI_HOME_PATH)
+  // log.verbose('环境变量', process.env.CLI_HOME_PATH)
   // yzl: verb 环环境境变变量量 C:\Users\Administrator\.yzl-cli
 }
 
@@ -149,6 +135,7 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
+    .option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', '')
 
   // 命令注册
   program
@@ -156,6 +143,7 @@ function registerCommand() {
     .option('-f, --force', '是否强制初始化项目')
     .action(init)
 
+  // 监听命令触发时，这个命令会被放到全局
   // 监听 --debug命令
   program.on('option:debug', function () {
     const opts = program.opts()
@@ -165,6 +153,12 @@ function registerCommand() {
       process.env.LOG_LEVEL = 'info'
     }
     log.level = process.env.LOG_LEVEL
+  })
+
+  // 监听 --targetPath
+  program.on('option:targetPath', function () {
+    const opts = program.opts()
+    process.env.CLI_TARGET_PATH = opts.targetPath
   })
 
   // 对未知命令的监听
@@ -184,3 +178,5 @@ function registerCommand() {
     console.log()
   }
 }
+
+module.exports = core;
