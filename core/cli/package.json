@@ -28,6 +28,7 @@
     "@yzl-cli-dev/log": "file:../../utils/log",
     "@yzl-cli-dev/utils": "file:../../utils/utils",
     "@yzl-cli-dev/init": "file:../../commands/init",
+    "@yzl-cli-dev/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^9.2.0",
     "dotenv": "^16.0.1",

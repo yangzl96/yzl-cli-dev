@@ -8,6 +8,7 @@ const pathExists = require('path-exists').sync
 const commander = require('commander')
 const pkg = require('../package.json')
 const log = require('@yzl-cli-dev/log')
+const exec = require('@yzl-cli-dev/exec')
 const init = require('@yzl-cli-dev/init')
 const constant = require('./const')
 
@@ -141,7 +142,7 @@ function registerCommand() {
   program
     .command('init [projectName]')
     .option('-f, --force', '是否强制初始化项目')
-    .action(init)
+    .action(exec)
 
   // 监听命令触发时，这个命令会被放到全局
   // 监听 --debug命令
