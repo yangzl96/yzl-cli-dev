@@ -7,18 +7,24 @@ const semver = require('semver')
 const colors = require('colors')
 const userHome = require('user-home');
 const pathExists = require('path-exists').sync
+const commander = require('commander')
 const pkg = require('../package.json')
 const log = require('@yzl-cli-dev/log')
+const init = require('@yzl-cli-dev/init')
 const constant = require('./const')
 
 // 参数
 let args
 
+// 实例化一个command 脚手架对象
+const program = new commander.Command()
+
 async function core() {
   try {
-    checkInputArgs()
+    // checkInputArgs()
     checkEnv()
-    checkGlobalUpdate()
+    await checkGlobalUpdate()
+    registerCommand()
   } catch (error) {
     log.error(error.message)
   }
@@ -133,5 +139,48 @@ async function checkGlobalUpdate() {
   if (lastVersion && semver.gt(lastVersion, currentVersion)) {
     log.warn(colors.yellow(`请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${lastVersion}，
                                     更新命令：npm install -g ${npmName}`))
+  }
+}
+
+// 命令注册
+function registerCommand() {
+  program
+    .name(Object.keys(pkg.bin)[0])
+    .usage('<command> [options]')
+    .version(pkg.version)
+    .option('-d, --debug', '是否开启调试模式', false)
+
+  // 命令注册
+  program
+    .command('init [projectName]')
+    .option('-f, --force', '是否强制初始化项目')
+    .action(init)
+
+  // 监听 --debug命令
+  program.on('option:debug', function () {
+    const opts = program.opts()
+    if (opts.debug) {
+      process.env.LOG_LEVEL = 'verbose'
+    } else {
+      process.env.LOG_LEVEL = 'info'
+    }
+    log.level = process.env.LOG_LEVEL
+  })
+
+  // 对未知命令的监听
+  program.on('command:*', function (obj) {
+    const availableCommands = program.commands.map(cmd => cmd.name())
+    console.log(colors.red('未知命令：' + obj[0]))
+    if (availableCommands.length > 0) {
+      console.log(colors.red('可用命令：' + availableCommands.join(',')))
+    }
+  })
+  // 解析命令
+  program.parse(process.argv)
+  // 说明没有输入命令的时候 比如：yzl-dev-cli || yzl-dev-cli -d
+  if (program.args && program.args.length < 1) {
+    // 打印出帮助文档
+    program.outputHelp()
+    console.log()
   }
 }

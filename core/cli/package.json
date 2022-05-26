@@ -24,10 +24,12 @@
     "access": "public"
   },
   "dependencies": {
+    "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
     "@yzl-cli-dev/log": "file:../../utils/log",
     "@yzl-cli-dev/utils": "file:../../utils/utils",
-    "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "@yzl-cli-dev/init": "file:../../commands/init",
     "colors": "^1.4.0",
+    "commander": "^9.2.0",
     "dotenv": "^16.0.1",
     "import-local": "^3.1.0",
     "minimist": "^1.2.6",
