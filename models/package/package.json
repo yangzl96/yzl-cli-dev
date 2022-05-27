@@ -27,8 +27,10 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
-    "@yzl-cli-dev/utils": "file:../../utils/utils",
     "@yzl-cli-dev/format-path": "file:../../utils/format-path",
+    "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "npminstall": "^6.2.0",
     "pkg-dir": "^5.0.0"
   }
 }

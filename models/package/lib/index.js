@@ -1,9 +1,11 @@
 'use strict';
 
 const path = require('path')
+const npminstall = require('npminstall')
 const pkgDir = require('pkg-dir').sync
 const { isObject } = require('@yzl-cli-dev/utils')
 const formatPath = require('@yzl-cli-dev/format-path')
+const { getDefaultRegistry } = require('@yzl-cli-dev/get-npm-info')
 
 class Package {
   constructor(options) {
@@ -15,6 +17,8 @@ class Package {
     }
     // package路径
     this.targetPath = options.targetPath
+    // 缓存package的路径
+    this.storeDir = options.storeDir
     // packageName
     this.packageName = options.packageName
     // package version
@@ -26,9 +30,17 @@ class Package {
 
   }
 
-  // 安装package
+  // 安装package 这里就是 init 的入口文件
   install() {
-
+    return npminstall({
+      root: this.targetPath,
+      storeDir: this.storeDir,
+      registry: getDefaultRegistry(true),
+      pkgs: [{
+        name: this.packageName,
+        version: this.packageVersion
+      }]
+    })
   }
 
   // 更新package
