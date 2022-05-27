@@ -144,7 +144,7 @@ function registerCommand() {
     .option('-f, --force', '是否强制初始化项目')
     .action(exec)
 
-  // 监听命令触发时，这个命令会被放到全局
+  // 监听命令触发时，这个命令会被放到program.opts
   // 监听 --debug命令
   program.on('option:debug', function () {
     const opts = program.opts()

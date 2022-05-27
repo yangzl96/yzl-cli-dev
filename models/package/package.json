@@ -25,5 +25,10 @@
   },
   "bugs": {
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
+  },
+  "dependencies": {
+    "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "@yzl-cli-dev/format-path": "file:../../utils/format-path",
+    "pkg-dir": "^5.0.0"
   }
 }
