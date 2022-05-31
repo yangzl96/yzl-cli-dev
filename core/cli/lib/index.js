@@ -69,7 +69,6 @@ function checkRoot() {
 
   const rootCheck = require('root-check')
   rootCheck()
-  console.log('root-check success')
 }
 
 // 检查用户主目录

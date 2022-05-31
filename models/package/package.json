@@ -28,9 +28,12 @@
   },
   "dependencies": {
     "@yzl-cli-dev/format-path": "file:../../utils/format-path",
-    "@yzl-cli-dev/utils": "file:../../utils/utils",
     "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "@yzl-cli-dev/log": "file:../../utils/log",
+    "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "fs-extra": "^10.1.0",
     "npminstall": "^6.2.0",
+    "path-exists": "^4.0.0",
     "pkg-dir": "^5.0.0"
   }
 }
