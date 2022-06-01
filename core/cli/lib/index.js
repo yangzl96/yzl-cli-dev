@@ -9,7 +9,6 @@ const commander = require('commander')
 const pkg = require('../package.json')
 const log = require('@yzl-cli-dev/log')
 const exec = require('@yzl-cli-dev/exec')
-const init = require('@yzl-cli-dev/init')
 const constant = require('./const')
 
 // 实例化一个command 脚手架对象
@@ -31,7 +30,6 @@ async function core() {
 
 async function prepare() {
   checkPkgVersion()
-  checkNodeVersion()
   checkRoot()
   checkUserHome()
   checkEnv()
@@ -43,16 +41,7 @@ function checkPkgVersion() {
   log.notice('cli', pkg.version)
 }
 
-// 检查Node版本
-function checkNodeVersion() {
-  // 当前版本号
-  const currentVersion = process.version
-  const lowestVersion = constant.LOWEST_NODE_VERSION
-  // 比对最低版本号
-  if (!semver.gte(currentVersion, lowestVersion)) {
-    throw new Error(colors.red(`yzl-cli 需要安装 v${lowestVersion} 以上版本的 Node.js`))
-  }
-}
+
 
 // 检查root账户 是否是root账户启动
 // process.geteuid 不支持windows

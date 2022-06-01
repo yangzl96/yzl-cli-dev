@@ -1,5 +1,6 @@
 'use strict';
 
+const cp = require('child_process')
 const path = require('path')
 const Package = require('@yzl-cli-dev/package')
 const log = require('@yzl-cli-dev/log')
@@ -63,11 +64,55 @@ async function exec() {
   const rootFile = pkg.getRootFilePath()
   // 加载init方法
   if (rootFile) {
-    log.verbose('rootFile', rootFile)
-    // 使用apply后，初始化的方法才可以正常接收参数
-    // apply的数组用方法接收时会变成单个单个的参数
-    require(rootFile).apply(null, arguments)
+    try {
+      log.verbose('rootFile', rootFile)
+      // 在当前进程中调用
+      // require(rootFile).call(null, Array.from(arguments))
+
+      // 在node子进程中调用
+      const args = Array.from(arguments)
+      const cmd = args[args.length - 1]
+      // 对cmd对象进行瘦身
+      const o = Object.create(null)
+      Object.keys(cmd).forEach(key => {
+        if (cmd.hasOwnProperty(key) && !key.startsWith('_') && key !== 'parent') {
+          o[key] = cmd[key]
+        }
+      })
+      // 替换
+      args[args.length - 1] = o
+      // 注意这里传参要stringify
+      const code = `require('${rootFile}').call(null,  ${JSON.stringify(args)})`
+      // node -v 'code'
+      const child = spawn('node', ['-e', code], {
+        // inherit 直接监听数据打印，不需要使用 on ('data')了
+        stdio: 'inherit',
+        cwd: process.cwd(), //当前命令执行的位置
+      })
+      // 监听错误
+      child.on('error', e => {
+        log.error(e.message)
+        process.exit(1)
+      })
+      // 执行成功以后的退出事件
+      child.on('exit', e => {
+        log.verbose('命令执行成功：' + e)
+        process.exit(e)
+      })
+    } catch (error) {
+      log.error(error.message)
+    }
   }
+}
+
+// 兼容处理 /c表示静默执行
+// window上：cp.spawn('cmd', ['/c', 'node', '-e'], code)
+function spawn(command, args, options) {
+  const win32 = process.platform === 'win32'
+  const cmd = win32 ? 'cmd' : command
+  const cmdArgs = win32 ? ['/c'].concat(command, args) : args
+
+  return cp.spawn(cmd, cmdArgs, options || {})
 }
 
 
