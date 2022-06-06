@@ -83,7 +83,7 @@ async function exec() {
       args[args.length - 1] = o
       // 注意这里传参要stringify
       const code = `require('${rootFile}').call(null,  ${JSON.stringify(args)})`
-      // node -v 'code'
+      // node -v 'code' 执行脚本
       const child = spawn('node', ['-e', code], {
         // inherit 直接监听数据打印，不需要使用 on ('data')了
         stdio: 'inherit',
