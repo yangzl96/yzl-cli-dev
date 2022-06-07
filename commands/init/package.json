@@ -31,6 +31,7 @@
     "@yzl-cli-dev/log": "file:../../utils/log",
     "@yzl-cli-dev/package": "file:../../models/package",
     "@yzl-cli-dev/request": "file:../../utils/request",
+    "@yzl-cli-dev/utils": "file:../../utils/utils",
     "fs-extra": "^10.1.0",
     "inquirer": "^8.2.4",
     "semver": "^7.3.7",

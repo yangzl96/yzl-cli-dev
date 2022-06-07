@@ -4,6 +4,7 @@
 
 const Command = require('@yzl-cli-dev/command')
 const Package = require('@yzl-cli-dev/package')
+const { spinnerStart, sleep } = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const path = require('path')
 const userHome = require('user-home')
@@ -198,9 +199,17 @@ class InitCommand extends Command {
       packageVersion: version
     })
     if (!await templateNpm.exists()) {
+      const spinner = spinnerStart('正在下载模板...')
+      await sleep()
       await templateNpm.install()
+      spinner.stop(true)
+      log.success('下载模板成功')
     } else {
+      const spinner = spinnerStart('正在更新模板...')
+      await sleep()
       await templateNpm.update()
+      spinner.stop(true)
+      log.success('更新模板成功')
     }
   }
 
