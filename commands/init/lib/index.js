@@ -3,10 +3,14 @@
 // 项目初始化
 
 const Command = require('@yzl-cli-dev/command')
+const Package = require('@yzl-cli-dev/package')
 const log = require('@yzl-cli-dev/log')
+const path = require('path')
+const userHome = require('user-home')
 const inquirer = require('inquirer')
 const fse = require('fs-extra')
 const semver = require('semver')
+const getProjectTemplate = require('./getProjectTemplate')
 
 const TYPE_PROJEC = 'project'
 const TYPE_COMPONENT = 'component'
@@ -26,7 +30,8 @@ class InitCommand extends Command {
       if (projectInfo) {
         // 2. 下载模板
         log.verbose('projectInfo', projectInfo)
-        this.downloadTemplate()
+        this.projectInfo = projectInfo
+        await this.downloadTemplate()
       }
       // 3. 安装模板
     } catch (error) {
@@ -36,6 +41,12 @@ class InitCommand extends Command {
 
   // 准备工作
   async prepare() {
+    // 0. 判断项目模板是否存在
+    const template = await getProjectTemplate()
+    if (!template || template.length === 0) {
+      throw new Error('项目模板不存在！')
+    }
+    this.template = template
     const localPath = process.cwd()
     log.verbose('localPath', localPath)
     // 1. 判断当前目录是否为空
@@ -141,6 +152,11 @@ class InitCommand extends Command {
             return v
           }
         }
+      }, {
+        type: 'list',
+        name: 'projectTemplate',
+        message: '请选择项目模板',
+        choices: this.createTemplateChoices()
       }])
       projectInfo = {
         type,
@@ -155,7 +171,6 @@ class InitCommand extends Command {
   // 是否是空文件夹
   isDirEmpty(localPath) {
     let fileList = fs.readdirSync(localPath)
-    console.log(fileList)
     // 文件过滤(缓存文件认为是空)
     fileList = fileList.filter(file => (
       !file.startsWith('.') && ['node_modules'].indexOf(file) < 0
@@ -164,12 +179,37 @@ class InitCommand extends Command {
   }
 
   // 下载模板
-  downloadTemplate() {
+  async downloadTemplate() {
     // 1. 通过项目模板API获取项目模板信息
     // 1.1 通过egg搭建一套后端系统
-    // 1.2 通过Npm存储项目模板
+    // 1.2 通过Npm存储项目模板(vue-cli / vue-element-admin)
     // 1.3 将项目模板信息存储到mongodb数据库中
     // 1.4 通过egg获取mongodb中的数据并且通过API返回
+
+    const { projectTemplate } = this.projectInfo
+    const templateInfo = this.template.find(item => item.npmName === projectTemplate)
+    const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'template')
+    const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'template', 'node_modules')
+    const { npmName, version } = templateInfo
+    const templateNpm = new Package({
+      targetPath,
+      storeDir,
+      packageName: npmName,
+      packageVersion: version
+    })
+    if (!await templateNpm.exists()) {
+      await templateNpm.install()
+    } else {
+      await templateNpm.update()
+    }
+  }
+
+  // 模板选择
+  createTemplateChoices() {
+    return this.template.map(item => ({
+      value: item.npmName,
+      name: item.name
+    }))
   }
 
 }

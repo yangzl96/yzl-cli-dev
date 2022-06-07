@@ -34,6 +34,7 @@ class Package {
   }
 
   async prepare() {
+    // 有路径值 但是真实文件不存在
     if (this.storeDir && !pathExists(this.storeDir)) {
       // 将this.storeDir目录 路径上的所有文件都创建出来
       log.verbose('mkdirpSync', this.storeDir)
@@ -46,7 +47,7 @@ class Package {
     log.verbose('currentVersion', this.packageVersion)
   }
 
-  // _@yzl-cli_init@1.1.2@@yzl-cli/
+  // 文件名长这样：_@yzl-cli_init@1.1.2@@yzl-cli/
   // 生成缓存的文件路径
   get cacheFilePath() {
     return path.resolve(this.storeDir,

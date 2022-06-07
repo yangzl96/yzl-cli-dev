@@ -29,8 +29,11 @@
   "dependencies": {
     "@yzl-cli-dev/command": "file:../../models/command",
     "@yzl-cli-dev/log": "file:../../utils/log",
+    "@yzl-cli-dev/package": "file:../../models/package",
+    "@yzl-cli-dev/request": "file:../../utils/request",
     "fs-extra": "^10.1.0",
     "inquirer": "^8.2.4",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "user-home": "^3.0.0"
   }
 }
