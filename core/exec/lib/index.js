@@ -1,10 +1,9 @@
 'use strict';
 
-const cp = require('child_process')
 const path = require('path')
 const Package = require('@yzl-cli-dev/package')
 const log = require('@yzl-cli-dev/log')
-
+const { exec: spawn } = require('@yzl-cli-dev/utils')
 // 配置表
 const SETTINGS = {
   // init: '@yzl-cli-dev/init'
@@ -103,16 +102,6 @@ async function exec() {
       log.error(error.message)
     }
   }
-}
-
-// 兼容处理 /c表示静默执行
-// window上：cp.spawn('cmd', ['/c', 'node', '-e'], code)
-function spawn(command, args, options) {
-  const win32 = process.platform === 'win32'
-  const cmd = win32 ? 'cmd' : command
-  const cmdArgs = win32 ? ['/c'].concat(command, args) : args
-
-  return cp.spawn(cmd, cmdArgs, options || {})
 }
 
 

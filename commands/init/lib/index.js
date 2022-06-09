@@ -4,7 +4,7 @@
 
 const Command = require('@yzl-cli-dev/command')
 const Package = require('@yzl-cli-dev/package')
-const { spinnerStart, sleep } = require('@yzl-cli-dev/utils')
+const { spinnerStart, sleep, execAsync } = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const path = require('path')
 const userHome = require('user-home')
@@ -273,6 +273,35 @@ class InitCommand extends Command {
       throw error
     } finally {
       spinner.stop(true)
+      log.success('模板安装成功')
+    }
+    // 依赖安装
+    const { installCommand, startCommand } = this.templateInfo
+    let installRes // 0 表示成功
+    if (installCommand) {
+      const installCmd = installCommand.split(' ')
+      const cmd = installCmd[0]
+      const args = installCmd.slice(1)
+      installRes = await execAsync(cmd, args, {
+        // 就是这个过程是在子进程进行的
+        // 但是inherit可以将当前结果直接转向当前主进程的输入输出流
+        // 也就是打印
+        stdio: 'inherit',
+        cwd: process.cwd()
+      })
+      if (installRes !== 0) {
+        throw new Error('依赖安装失败')
+      }
+    }
+    // 启动执行命令
+    if (startCommand) {
+      const startCmd = startCommand.split(' ')
+      const cmd = startCmd[0]
+      const args = startCmd.slice(1)
+      installRes = await execAsync(cmd, args, {
+        stdio: 'inherit',
+        cwd: process.cwd()
+      })
     }
   }
 

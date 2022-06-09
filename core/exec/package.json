@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@yzl-cli-dev/package": "file:../../models/package",
-    "@yzl-cli-dev/log": "file:../../utils/log"
+    "@yzl-cli-dev/log": "file:../../utils/log",
+    "@yzl-cli-dev/utils": "file:../../utils/utils"
   }
 }
