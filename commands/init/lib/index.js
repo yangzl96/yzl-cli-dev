@@ -15,6 +15,8 @@ const getProjectTemplate = require('./getProjectTemplate')
 
 const TYPE_PROJEC = 'project'
 const TYPE_COMPONENT = 'component'
+const TEMPLATE_TYPE_NORMAL = 'normal'
+const TEMPLATE_TYPE_CUSTOM = 'custom'
 
 class InitCommand extends Command {
   init() {
@@ -33,6 +35,8 @@ class InitCommand extends Command {
         log.verbose('projectInfo', projectInfo)
         this.projectInfo = projectInfo
         await this.downloadTemplate()
+        // 3.  安装模板
+        await this.installTemplate()
       }
       // 3. 安装模板
     } catch (error) {
@@ -181,17 +185,21 @@ class InitCommand extends Command {
 
   // 下载模板
   async downloadTemplate() {
+    // 模板制定工作
     // 1. 通过项目模板API获取项目模板信息
     // 1.1 通过egg搭建一套后端系统
     // 1.2 通过Npm存储项目模板(vue-cli / vue-element-admin)
     // 1.3 将项目模板信息存储到mongodb数据库中
     // 1.4 通过egg获取mongodb中的数据并且通过API返回
 
+    // 下载工作
     const { projectTemplate } = this.projectInfo
     const templateInfo = this.template.find(item => item.npmName === projectTemplate)
     const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'template')
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'template', 'node_modules')
     const { npmName, version } = templateInfo
+    // 保存当前选中的模板
+    this.templateInfo = templateInfo
     const templateNpm = new Package({
       targetPath,
       storeDir,
@@ -201,16 +209,75 @@ class InitCommand extends Command {
     if (!await templateNpm.exists()) {
       const spinner = spinnerStart('正在下载模板...')
       await sleep()
-      await templateNpm.install()
-      spinner.stop(true)
-      log.success('下载模板成功')
+      try {
+        await templateNpm.install()
+      } catch (error) {
+        throw error
+      } finally {
+        spinner.stop(true)
+        if (await templateNpm.exists()) {
+          log.success('下载模板成功')
+          // 保存package实例
+          this.templateNpm = templateNpm
+        }
+      }
     } else {
       const spinner = spinnerStart('正在更新模板...')
       await sleep()
-      await templateNpm.update()
-      spinner.stop(true)
-      log.success('更新模板成功')
+      try {
+        await templateNpm.update()
+      } catch (error) {
+        throw error
+      } finally {
+        spinner.stop(true)
+        if (await templateNpm.exists()) {
+          log.success('更新模板成功')
+          // 保存package实例
+          this.templateNpm = templateNpm
+        }
+      }
     }
+  }
+
+  // 安装模板
+  async installTemplate() {
+    if (this.templateInfo) {
+      if (!this.templateInfo.type) {
+        this.templateInfo.type = TEMPLATE_TYPE_NORMAL
+      }
+      if (this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+        // 标准安装
+        await this.installNormalTemplate()
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
+        //自定义安装
+        await this.installCustomTemplate()
+      } else {
+        throw Error('项目模板类型无法识别！')
+      }
+    } else {
+      throw Error('项目模板不存在！')
+    }
+  }
+
+  async installNormalTemplate() {
+    // 拷贝模板代码至当前目录
+    let spinner = spinnerStart('正在安装模板...')
+    await sleep()
+    try {
+      const templatePath = path.resolve(this.templateNpm.cacheFilePath, 'template')
+      const targetPath = process.cwd()
+      fse.ensureDirSync(templatePath)
+      fse.ensureDirSync(targetPath)
+      fse.copySync(templatePath, targetPath)
+    } catch (error) {
+      throw error
+    } finally {
+      spinner.stop(true)
+    }
+  }
+
+  async installCustomTemplate() {
+    console.log(2)
   }
 
   // 模板选择
