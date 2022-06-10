@@ -32,8 +32,11 @@
     "@yzl-cli-dev/package": "file:../../models/package",
     "@yzl-cli-dev/request": "file:../../utils/request",
     "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
     "inquirer": "^8.2.4",
+    "kebab-case": "^1.0.1",
     "semver": "^7.3.7",
     "user-home": "^3.0.0"
   }

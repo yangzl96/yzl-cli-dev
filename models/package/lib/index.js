@@ -109,6 +109,7 @@ class Package {
           version: latestPackageVersion
         }]
       })
+      // 变更最新版本
       this.packageVersion = latestPackageVersion
       log.verbose('update:over', this.packageVersion)
     }

@@ -10,6 +10,8 @@ const path = require('path')
 const userHome = require('user-home')
 const inquirer = require('inquirer')
 const fse = require('fs-extra')
+const ejs = require('ejs')
+const glob = require('glob')
 const semver = require('semver')
 const getProjectTemplate = require('./getProjectTemplate')
 
@@ -60,7 +62,7 @@ class InitCommand extends Command {
     }
     this.template = template
     const localPath = process.cwd()
-    log.verbose('localPath', localPath)
+    log.verbose('当前路径：', localPath)
     // 1. 判断当前目录是否为空
     if (!this.isDirEmpty(localPath)) {
       let ifContinue = false
@@ -177,6 +179,10 @@ class InitCommand extends Command {
     } else if (type === TYPE_COMPONENT) {
 
     }
+    // 生成classname
+    if (projectInfo.projectName) {
+      projectInfo.className = require('kebab-case')(projectInfo.projectName).replace(/^-/, '')
+    }
     return projectInfo
   }
 
@@ -207,6 +213,7 @@ class InitCommand extends Command {
     const { npmName, version } = templateInfo
     // 保存当前选中的模板
     this.templateInfo = templateInfo
+    log.verbose('templateInfo', templateInfo)
     const templateNpm = new Package({
       targetPath,
       storeDir,
@@ -268,6 +275,7 @@ class InitCommand extends Command {
 
   async installNormalTemplate() {
     // 拷贝模板代码至当前目录
+    log.verbose('templateNpm', this.templateNpm)
     let spinner = spinnerStart('正在安装模板...')
     await sleep()
     try {
@@ -275,6 +283,7 @@ class InitCommand extends Command {
       const targetPath = process.cwd()
       fse.ensureDirSync(templatePath)
       fse.ensureDirSync(targetPath)
+      // 拷贝
       fse.copySync(templatePath, targetPath)
     } catch (error) {
       throw error
@@ -282,11 +291,15 @@ class InitCommand extends Command {
       spinner.stop(true)
       log.success('模板安装成功')
     }
+    // 要忽略的文件
+    const ignore = ['node_modules/**', 'public/**']
+    // ejs渲染
+    await this.ejsRender({ ignore })
     // 依赖安装
     const { installCommand, startCommand } = this.templateInfo
-    await this.execCommand(installCommand, '依赖安装过程中失败！')
+    // await this.execCommand(installCommand, '依赖安装过程中失败！')
     // 启动执行命令
-    await this.execCommand(startCommand, '启动过程中失败！')
+    // await this.execCommand(startCommand, '启动过程中失败！')
   }
 
   async installCustomTemplate() {
@@ -330,6 +343,42 @@ class InitCommand extends Command {
       return cmd
     }
     return null
+  }
+
+  async ejsRender(options) {
+    const dir = process.cwd()
+    return new Promise((resolve, reject) => {
+      // 获取所有的文件
+      glob('**', {
+        cwd: dir,
+        ignore: options.ignore,
+        nodir: true
+      }, (err, files) => {
+        if (err) {
+          reject(err)
+        }
+        Promise.all(files.map(file => {
+          // 对文件进行render
+          const filePath = path.join(dir, file)
+          return new Promise((resolve1, reject1) => {
+            ejs.renderFile(filePath, {}, (err, result) => {
+              if (err) {
+                // BASE_URL is not defined 
+                // 这是脚手架public里面的，是webpack中用的
+                console.log(err)
+                reject1(err)
+              } else {
+                resolve1(result)
+              }
+            })
+          });
+        })).then(res => {
+          resolve()
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    })
   }
 
 }
