@@ -13,10 +13,17 @@ const fse = require('fs-extra')
 const semver = require('semver')
 const getProjectTemplate = require('./getProjectTemplate')
 
+// 新建类型
 const TYPE_PROJEC = 'project'
 const TYPE_COMPONENT = 'component'
+
+// 模板类型
 const TEMPLATE_TYPE_NORMAL = 'normal'
 const TEMPLATE_TYPE_CUSTOM = 'custom'
+
+// 指令白名单
+const WHITE_COMMAND = ['npm', 'cnpm']
+
 
 class InitCommand extends Command {
   init() {
@@ -277,36 +284,36 @@ class InitCommand extends Command {
     }
     // 依赖安装
     const { installCommand, startCommand } = this.templateInfo
-    let installRes // 0 表示成功
-    if (installCommand) {
-      const installCmd = installCommand.split(' ')
-      const cmd = installCmd[0]
-      const args = installCmd.slice(1)
-      installRes = await execAsync(cmd, args, {
+    await this.execCommand(installCommand, '依赖安装过程中失败！')
+    // 启动执行命令
+    await this.execCommand(startCommand, '启动过程中失败！')
+  }
+
+  async installCustomTemplate() {
+    console.log(2)
+  }
+
+  async execCommand(command, errMsg) {
+    let ret // 0 表示成功
+    if (command) {
+      const cmdArray = command.split(' ')
+      const cmd = this.checkCommand(cmdArray[0])
+      if (!cmd) {
+        throw new Error('命令不存在!命令：', command)
+      }
+      const args = cmdArray.slice(1)
+      ret = await execAsync(cmd, args, {
         // 就是这个过程是在子进程进行的
         // 但是inherit可以将当前结果直接转向当前主进程的输入输出流
         // 也就是打印
         stdio: 'inherit',
         cwd: process.cwd()
       })
-      if (installRes !== 0) {
-        throw new Error('依赖安装失败')
-      }
     }
-    // 启动执行命令
-    if (startCommand) {
-      const startCmd = startCommand.split(' ')
-      const cmd = startCmd[0]
-      const args = startCmd.slice(1)
-      installRes = await execAsync(cmd, args, {
-        stdio: 'inherit',
-        cwd: process.cwd()
-      })
+    if (ret !== 0) {
+      throw new Error(errMsg)
     }
-  }
-
-  async installCustomTemplate() {
-    console.log(2)
+    return ret
   }
 
   // 模板选择
@@ -315,6 +322,14 @@ class InitCommand extends Command {
       value: item.npmName,
       name: item.name
     }))
+  }
+
+  // 白名单指令检测
+  checkCommand(cmd) {
+    if (WHITE_COMMAND.includes(cmd)) {
+      return cmd
+    }
+    return null
   }
 
 }
