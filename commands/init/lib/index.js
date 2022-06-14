@@ -50,6 +50,9 @@ class InitCommand extends Command {
       // 3. 安装模板
     } catch (error) {
       log.error(error.message)
+      if (process.env.LOG_LEVEL === 'verbose') {
+        console.log(error)
+      }
     }
   }
 
@@ -99,7 +102,22 @@ class InitCommand extends Command {
 
   // 获取项目信息
   async getPorjectInfo() {
+    // 首字符必须为英文
+    // 尾字符必须为英文或数字，不能为字符
+    // 字符仅支持 - _
+    // 合法的：a , a-b, a_b, a-b-c, a-b1-c1, a_b1_c1
+    // 非法的：1, a_, a-, a-1, a_1
+    function isValidName(v) {
+      return /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v)
+    }
+
     let projectInfo = {}
+    let isProjectNameValid = false
+    // 如果初始化输入了项目名并且合法
+    if (isValidName(this.projectName)) {
+      isProjectNameValid = true
+      projectInfo.projectName = this.projectName
+    }
     // 1. 选择创建项目或组件
     const { type } = await inquirer.prompt({
       type: 'list',
@@ -119,20 +137,15 @@ class InitCommand extends Command {
     })
     if (type === TYPE_PROJEC) {
       // 2. 获取项目基本信息
-      const project = await inquirer.prompt([{
+      const projectNamePrompt = {
         type: 'input',
         name: 'projectName',
         message: '请输入项目名称',
         default: '',
         validate: function (v) {
-          // 首字符必须为英文
-          // 尾字符必须为英文或数字，不能为字符
-          // 字符仅支持 - _
-          // 合法的：a , a-b, a_b, a-b-c, a-b1-c1, a_b1_c1
-          // 非法的：1, a_, a-, a-1, a_1
           const done = this.async()
           setTimeout(() => {
-            if (! /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v)) {
+            if (!isValidName(v)) {
               done('请输入合法的项目名称!(首字符英文，结尾不能为字符，字符仅支持_-)')
               return
             }
@@ -142,7 +155,14 @@ class InitCommand extends Command {
         filter: function (v) {
           return v
         }
-      }, {
+      }
+      const projectPrompt = []
+      // 名称不合法或者没输入就注入询问的命令
+      if (!isProjectNameValid) {
+        projectPrompt.push(projectNamePrompt)
+      }
+      // 默认需要的询问
+      projectPrompt.push({
         type: 'input',
         name: 'projectVersion',
         message: '请输入项目版本号',
@@ -171,17 +191,25 @@ class InitCommand extends Command {
         name: 'projectTemplate',
         message: '请选择项目模板',
         choices: this.createTemplateChoices()
-      }])
+      })
+      // 定义命令行询问
+      const project = await inquirer.prompt(projectPrompt)
       projectInfo = {
         type,
-        ...project
+        ...projectInfo,
+        ...project,
       }
     } else if (type === TYPE_COMPONENT) {
 
     }
     // 生成classname
     if (projectInfo.projectName) {
+      projectInfo.name = projectInfo.projectName
       projectInfo.className = require('kebab-case')(projectInfo.projectName).replace(/^-/, '')
+    }
+    // version
+    if (projectInfo.projectVersion) {
+      projectInfo.version = projectInfo.projectVersion
     }
     return projectInfo
   }
@@ -297,9 +325,9 @@ class InitCommand extends Command {
     await this.ejsRender({ ignore })
     // 依赖安装
     const { installCommand, startCommand } = this.templateInfo
-    // await this.execCommand(installCommand, '依赖安装过程中失败！')
+    await this.execCommand(installCommand, '依赖安装过程中失败！')
     // 启动执行命令
-    // await this.execCommand(startCommand, '启动过程中失败！')
+    await this.execCommand(startCommand, '启动过程中失败！')
   }
 
   async installCustomTemplate() {
@@ -347,6 +375,7 @@ class InitCommand extends Command {
 
   async ejsRender(options) {
     const dir = process.cwd()
+    const projectInfo = this.projectInfo
     return new Promise((resolve, reject) => {
       // 获取所有的文件
       glob('**', {
@@ -361,13 +390,15 @@ class InitCommand extends Command {
           // 对文件进行render
           const filePath = path.join(dir, file)
           return new Promise((resolve1, reject1) => {
-            ejs.renderFile(filePath, {}, (err, result) => {
+            ejs.renderFile(filePath, projectInfo, {}, (err, result) => {
               if (err) {
                 // BASE_URL is not defined 
                 // 这是脚手架public里面的，是webpack中用的
                 console.log(err)
                 reject1(err)
               } else {
+                // 写入
+                fse.writeFileSync(filePath, result)
                 resolve1(result)
               }
             })

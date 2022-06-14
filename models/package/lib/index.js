@@ -112,7 +112,12 @@ class Package {
       // 变更最新版本
       this.packageVersion = latestPackageVersion
       log.verbose('update:over', this.packageVersion)
+    } else {
+      // 变更最新版本
+      this.packageVersion = latestPackageVersion
+      log.verbose('update:over', this.packageVersion)
     }
+
   }
   // 获取入口文件的路径
   getRootFilePath() {
