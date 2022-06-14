@@ -135,6 +135,8 @@ class InitCommand extends Command {
         }
       ]
     })
+    // 根据type过滤模板显示
+    this.template = this.template.filter(template => template.tag.includes(type))
     if (type === TYPE_PROJEC) {
       // 2. 获取项目基本信息
       const projectNamePrompt = {
@@ -320,7 +322,8 @@ class InitCommand extends Command {
       log.success('模板安装成功')
     }
     // 要忽略的文件
-    const ignore = ['node_modules/**', 'public/**']
+    const templateIgnore = this.templateInfo.ignore || []
+    const ignore = ['**/node_modules/**', ...templateIgnore]
     // ejs渲染
     await this.ejsRender({ ignore })
     // 依赖安装
