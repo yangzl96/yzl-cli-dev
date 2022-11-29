@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/command",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "> TODO: description",
   "author": "yangzongliu <1065051770@qq.com>",
   "homepage": "https://github.com/yangzongliu/yzl-cli-dev#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
+    "@yzl-cli-dev/log": "file:../../utils/log",
     "colors": "^1.4.0",
-    "semver": "^7.3.7",
-    "@yzl-cli-dev/log": "file:../../utils/log"
+    "semver": "^7.3.7"
   }
 }

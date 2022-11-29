@@ -110,7 +110,9 @@ async function checkGlobalUpdate() {
   const npmName = pkg.name
   // 调用npm提供的API，获取所有版本号
   // 提取所有的版本号，比对哪些版本号是大于当前的
-  const { getNpmSemverVersion } = require('@yzl-cli-dev/get-npm-info')
+  const {
+    getNpmSemverVersion
+  } = require('@yzl-cli-dev/get-npm-info')
   // 获取最新的版本号，提示用户更新
   const lastVersion = await getNpmSemverVersion(currentVersion, npmName)
   // 最新版本存在 同时 大于当前版本
@@ -131,7 +133,7 @@ function registerCommand() {
 
   // 命令注册
   program
-    .command('init [projectName]')
+    .command('create [projectName]')
     .option('-f, --force', '是否强制初始化项目')
     .action(exec)
 

@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/core",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "yzl-cli-dev core",
   "author": "ex-yangzl <exyangzl@szca.com>",
   "homepage": "",
@@ -24,11 +24,11 @@
     "access": "public"
   },
   "dependencies": {
+    "@yzl-cli-dev/exec": "file:../exec",
     "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "@yzl-cli-dev/init": "file:../../commands/init",
     "@yzl-cli-dev/log": "file:../../utils/log",
     "@yzl-cli-dev/utils": "file:../../utils/utils",
-    "@yzl-cli-dev/init": "file:../../commands/init",
-    "@yzl-cli-dev/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^9.2.0",
     "dotenv": "^16.0.1",

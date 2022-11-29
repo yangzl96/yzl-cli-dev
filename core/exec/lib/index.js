@@ -3,12 +3,14 @@
 const path = require('path')
 const Package = require('@yzl-cli-dev/package')
 const log = require('@yzl-cli-dev/log')
-const { exec: spawn } = require('@yzl-cli-dev/utils')
+const {
+  exec: spawn
+} = require('@yzl-cli-dev/utils')
 // 配置表
 const SETTINGS = {
-  // init: '@yzl-cli-dev/init'
+  create: '@yzl-cli-dev/init'
   // 先用一个线上存的包测试
-  init: '@imooc-cli/init'
+  // create: '@imooc-cli/init'
 }
 
 const CACHE_DIR = 'dependencies/'
@@ -26,6 +28,7 @@ async function exec() {
   // cmdObj.name() 拿到command名称
   const cmdName = cmdObj.name()
   const packageName = SETTINGS[cmdName]
+  log.verbose('packageName', packageName)
   const packageVersion = 'latest'
 
   // 没指定init目标路径
@@ -82,6 +85,7 @@ async function exec() {
       args[args.length - 1] = o
       // 注意这里传参要stringify
       const code = `require('${rootFile}').call(null,  ${JSON.stringify(args)})`
+      log.verbose('执行code：' + code)
       // node -v 'code' 执行脚本
       const child = spawn('node', ['-e', code], {
         // inherit 直接监听数据打印，不需要使用 on ('data')了

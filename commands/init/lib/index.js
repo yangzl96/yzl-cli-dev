@@ -4,7 +4,11 @@
 
 const Command = require('@yzl-cli-dev/command')
 const Package = require('@yzl-cli-dev/package')
-const { spinnerStart, sleep, execAsync } = require('@yzl-cli-dev/utils')
+const {
+  spinnerStart,
+  sleep,
+  execAsync
+} = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const path = require('path')
 const userHome = require('user-home')
@@ -17,7 +21,6 @@ const getProjectTemplate = require('./getProjectTemplate')
 
 // 新建类型
 const TYPE_PROJEC = 'project'
-const TYPE_COMPONENT = 'component'
 
 // 模板类型
 const TEMPLATE_TYPE_NORMAL = 'normal'
@@ -85,7 +88,9 @@ class InitCommand extends Command {
       if (ifContinue || this.force) {
         // 2. 是否启动强制更新
         // 做二次确认
-        const { confirmDelete } = await inquirer.prompt({
+        const {
+          confirmDelete
+        } = await inquirer.prompt({
           type: 'confirm',
           name: 'confirmDelete',
           default: false,
@@ -119,21 +124,17 @@ class InitCommand extends Command {
       projectInfo.projectName = this.projectName
     }
     // 1. 选择创建项目或组件
-    const { type } = await inquirer.prompt({
+    const {
+      type
+    } = await inquirer.prompt({
       type: 'list',
       name: 'type',
       message: '请选择初始化类型',
       default: TYPE_PROJEC,
-      choices: [
-        {
-          name: '项目',
-          value: TYPE_PROJEC
-        },
-        {
-          name: '组件',
-          value: TYPE_COMPONENT
-        }
-      ]
+      choices: [{
+        name: '项目',
+        value: TYPE_PROJEC
+      }, ]
     })
     // 根据type过滤模板显示
     this.template = this.template.filter(template => template.tag.includes(type))
@@ -201,8 +202,6 @@ class InitCommand extends Command {
         ...projectInfo,
         ...project,
       }
-    } else if (type === TYPE_COMPONENT) {
-
     }
     // 生成classname
     if (projectInfo.projectName) {
@@ -236,11 +235,16 @@ class InitCommand extends Command {
     // 1.4 通过egg获取mongodb中的数据并且通过API返回
 
     // 下载工作
-    const { projectTemplate } = this.projectInfo
+    const {
+      projectTemplate
+    } = this.projectInfo
     const templateInfo = this.template.find(item => item.npmName === projectTemplate)
     const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'template')
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'template', 'node_modules')
-    const { npmName, version } = templateInfo
+    const {
+      npmName,
+      version
+    } = templateInfo
     // 保存当前选中的模板
     this.templateInfo = templateInfo
     log.verbose('templateInfo', templateInfo)
@@ -325,9 +329,14 @@ class InitCommand extends Command {
     const templateIgnore = this.templateInfo.ignore || []
     const ignore = ['**/node_modules/**', ...templateIgnore]
     // ejs渲染
-    await this.ejsRender({ ignore })
+    await this.ejsRender({
+      ignore
+    })
     // 依赖安装
-    const { installCommand, startCommand } = this.templateInfo
+    const {
+      installCommand,
+      startCommand
+    } = this.templateInfo
     await this.execCommand(installCommand, '依赖安装过程中失败！')
     // 启动执行命令
     await this.execCommand(startCommand, '启动过程中失败！')
@@ -386,6 +395,7 @@ class InitCommand extends Command {
         ignore: options.ignore,
         nodir: true
       }, (err, files) => {
+        console.log(files);
         if (err) {
           reject(err)
         }
