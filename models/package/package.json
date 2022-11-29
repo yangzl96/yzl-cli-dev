@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@yzl-cli-dev/format-path": "^1.0.7",
-    "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "@yzl-cli-dev/get-npm-info": "^1.0.7",
     "@yzl-cli-dev/log": "^1.0.7",
     "@yzl-cli-dev/utils": "^1.0.7",
     "fs-extra": "^10.1.0",
