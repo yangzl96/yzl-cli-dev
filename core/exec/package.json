@@ -27,8 +27,9 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
-    "@yzl-cli-dev/log": "file:../../utils/log",
-    "@yzl-cli-dev/package": "file:../../models/package",
-    "@yzl-cli-dev/utils": "file:../../utils/utils"
-  }
+    "@yzl-cli-dev/log": "^1.0.6",
+    "@yzl-cli-dev/package": "^1.0.6",
+    "@yzl-cli-dev/utils": "^1.0.6"
+  },
+  "gitHead": "460593aec4edca6aa627af0bd572dd88d6970da6"
 }

@@ -27,11 +27,11 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
-    "@yzl-cli-dev/command": "file:../../models/command",
-    "@yzl-cli-dev/log": "file:../../utils/log",
-    "@yzl-cli-dev/package": "file:../../models/package",
-    "@yzl-cli-dev/request": "file:../../utils/request",
-    "@yzl-cli-dev/utils": "file:../../utils/utils",
+    "@yzl-cli-dev/command": "^1.0.6",
+    "@yzl-cli-dev/log": "^1.0.6",
+    "@yzl-cli-dev/package": "^1.0.6",
+    "@yzl-cli-dev/request": "^1.0.6",
+    "@yzl-cli-dev/utils": "^1.0.6",
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",
@@ -39,5 +39,6 @@
     "kebab-case": "^1.0.1",
     "semver": "^7.3.7",
     "user-home": "^3.0.0"
-  }
+  },
+  "gitHead": "460593aec4edca6aa627af0bd572dd88d6970da6"
 }

@@ -1,5 +1,5 @@
 {
-  "name": "get-npm-info",
+  "name": "@yzl-cli-dev/get-npm-info",
   "version": "1.0.6",
   "description": "> TODO: description",
   "author": "ex-yangzl <exyangzl@szca.com>",
@@ -27,5 +27,6 @@
     "axios": "^0.27.2",
     "semver": "^7.3.7",
     "url-join": "4.0.1"
-  }
+  },
+  "gitHead": "460593aec4edca6aa627af0bd572dd88d6970da6"
 }
