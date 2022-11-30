@@ -23,6 +23,9 @@
   "bugs": {
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "axios": "^0.27.2",
     "semver": "^7.3.7",
