@@ -8,7 +8,7 @@ const {
 } = require('@yzl-cli-dev/utils')
 // 配置表
 const SETTINGS = {
-  create: '@yzl-cli-dev/init'
+  'create-app': '@yzl-cli-dev/init'
   // 先用一个线上存的包测试
   // create: '@imooc-cli/init'
 }
