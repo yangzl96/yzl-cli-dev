@@ -129,11 +129,13 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
+    // .option('-V, --version', '查看版本号', false)
     .option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', '')
-
+    .option('-h, --help', '查看帮助指令')
   // 命令注册
   program
-    .command('create [projectName]')
+    .command('create-app [projectName]')
+    .description('创建一个脚手架')
     .option('-f, --force', '是否强制初始化项目')
     .action(exec)
 
