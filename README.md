@@ -12,7 +12,9 @@
 
 ### 链接本地依赖:
 
-`lerna link` **注意:本地依赖可能会出现链接不存在的问题，切换到对应目录，手动执行 npm instal1**
+`lerna link`
+
+**注意:本地依赖可能会出现链接不存在的问题，切换到对应目录，手动执行 npm instal1**
 
 ### 注册全局指令 lulu:
 
@@ -20,4 +22,6 @@
 
 ## Publish
 
-`lerna publish **注意:发布前，先 commit 代码**
+`lerna publish`
+
+**注意:发布前，先 commit 代码**
