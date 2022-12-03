@@ -8,10 +8,15 @@ const npminstall = require('npminstall')
 const fse = require('fs-extra')
 const pathExists = require('path-exists').sync
 const pkgDir = require('pkg-dir').sync
-const { isObject } = require('@yzl-cli-dev/utils')
+const {
+  isObject
+} = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const formatPath = require('@yzl-cli-dev/format-path')
-const { getDefaultRegistry, getNpmLatestVersion } = require('@yzl-cli-dev/get-npm-info')
+const {
+  getDefaultRegistry,
+  getNpmLatestVersion
+} = require('@yzl-cli-dev/get-npm-info')
 
 class Package {
   constructor(options) {
@@ -21,6 +26,7 @@ class Package {
     if (!isObject(options)) {
       throw new Error('Package类的options参数必须为对象！')
     }
+    console.log('--------------');
     // package路径
     this.targetPath = options.targetPath
     // 缓存package的路径
@@ -29,6 +35,7 @@ class Package {
     this.packageName = options.packageName
     // package version
     this.packageVersion = options.packageVersion
+    log.verbose('packageVersion', this.packageVersion)
     // package的缓存目录前缀
     this.cacheFilePathPrefix = this.packageName.replace('/', '_');
   }

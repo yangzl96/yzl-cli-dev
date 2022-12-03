@@ -5,6 +5,14 @@ function isObject(o) {
   return Object.prototype.toString.call(o) === '[object Object]'
 }
 
+function isFunction(o) {
+  return typeof o === 'function'
+}
+
+function isPlugin(id) {
+  return pluginRE.test(id)
+}
+
 function spinnerStart(msg = 'processing.. ', spinnerString = '|/-\\') {
   const Spinner = require('cli-spinner').Spinner;
   const spinner = new Spinner(msg + ' %s');
@@ -45,6 +53,7 @@ function execAsync(command, args, options) {
 
 module.exports = {
   isObject,
+  isFunction,
   spinnerStart,
   sleep,
   exec,

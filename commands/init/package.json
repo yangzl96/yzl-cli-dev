@@ -32,6 +32,7 @@
     "@yzl-cli-dev/package": "^1.1.1",
     "@yzl-cli-dev/request": "^1.0.7",
     "@yzl-cli-dev/utils": "^1.0.7",
+    "@yzl-cli-dev/generator": "file: ../../../../utils/generator",
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",

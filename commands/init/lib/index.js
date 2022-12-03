@@ -10,6 +10,7 @@ const {
   execAsync
 } = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
+const Generator = require('@yzl-cli-dev/generator')
 const path = require('path')
 const userHome = require('user-home')
 const inquirer = require('inquirer')
@@ -18,16 +19,12 @@ const ejs = require('ejs')
 const glob = require('glob')
 const semver = require('semver')
 const getProjectTemplate = require('./getProjectTemplate')
-
-// 新建类型
-const TYPE_PROJEC = 'project'
-
-// 模板类型
-const TEMPLATE_TYPE_NORMAL = 'normal'
-const TEMPLATE_TYPE_CUSTOM = 'custom'
-
-// 指令白名单
-const WHITE_COMMAND = ['npm', 'cnpm']
+const prompt = require('./prompt')
+const {
+  TYPE_PROJEC,
+  TYPE_CUSTOM,
+  WHITE_COMMAND,
+} = require('./const')
 
 
 class InitCommand extends Command {
@@ -40,17 +37,16 @@ class InitCommand extends Command {
 
   async exec() {
     try {
-      // 1. 准备阶段
+      // 准备阶段
       const projectInfo = await this.prepare()
       if (projectInfo) {
-        // 2. 下载模板
         log.verbose('projectInfo', projectInfo)
         this.projectInfo = projectInfo
+        // 下载模板
         await this.downloadTemplate()
-        // 3.  安装模板
+        //  安装模板
         await this.installTemplate()
       }
-      // 3. 安装模板
     } catch (error) {
       log.error(error.message)
       if (process.env.LOG_LEVEL === 'verbose') {
@@ -75,12 +71,7 @@ class InitCommand extends Command {
       // 如果没有 force
       if (!this.force) {
         //  1.1 询问是否继续创建
-        ifContinue = (await inquirer.prompt({
-          type: 'confirm',
-          name: 'ifContinue',
-          default: false,
-          message: '当前文件夹不为空，是否继续创建项目'
-        })).ifContinue
+        ifContinue = (await inquirer.prompt(prompt.IF_CONTINUE)).ifContinue
         if (!ifContinue) {
           return
         }
@@ -90,12 +81,7 @@ class InitCommand extends Command {
         // 做二次确认
         const {
           confirmDelete
-        } = await inquirer.prompt({
-          type: 'confirm',
-          name: 'confirmDelete',
-          default: false,
-          message: '是否确认清空当前目录下的文件'
-        })
+        } = await inquirer.prompt(prompt.CONFIRM_DELETE)
         if (confirmDelete) {
           // 清空当前目录内的文件
           fse.emptyDirSync(localPath)
@@ -115,94 +101,89 @@ class InitCommand extends Command {
     function isValidName(v) {
       return /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v)
     }
-
+    let projectBaseInfo = {}
     let projectInfo = {}
+    let projectTypeInfo = {}
+    const projectPrompt = []
     let isProjectNameValid = false
     // 如果初始化输入了项目名并且合法
     if (isValidName(this.projectName)) {
       isProjectNameValid = true
       projectInfo.projectName = this.projectName
     }
-    // 1. 选择创建项目或组件
-    const {
-      type
-    } = await inquirer.prompt({
-      type: 'list',
-      name: 'type',
-      message: '请选择初始化类型',
-      default: TYPE_PROJEC,
-      choices: [{
-        name: '项目',
-        value: TYPE_PROJEC
-      }, ]
-    })
-    // 根据type过滤模板显示
-    this.template = this.template.filter(template => template.tag.includes(type))
-    if (type === TYPE_PROJEC) {
-      // 2. 获取项目基本信息
-      const projectNamePrompt = {
-        type: 'input',
-        name: 'projectName',
-        message: '请输入项目名称',
-        default: '',
-        validate: function (v) {
-          const done = this.async()
-          setTimeout(() => {
-            if (!isValidName(v)) {
-              done('请输入合法的项目名称!(首字符英文，结尾不能为字符，字符仅支持_-)')
-              return
-            }
-            done(null, true)
-          }, 0)
-        },
-        filter: function (v) {
+
+    // 基础信息获取
+    // 项目名称
+    const projectNamePrompt = {
+      ...prompt.PROJECT_NAME,
+      validate: function (v) {
+        const done = this.async()
+        setTimeout(() => {
+          if (!isValidName(v)) {
+            done('请输入合法的项目名称!(首字符英文，结尾不能为字符，字符仅支持_-)')
+            return
+          }
+          done(null, true)
+        }, 0)
+      },
+      filter: function (v) {
+        return v
+      }
+    }
+    // 名称不合法或者没输入就注入询问的命令
+    if (!isProjectNameValid) {
+      projectPrompt.push(projectNamePrompt)
+    }
+    // 询问版本
+    projectPrompt.push({
+      ...prompt.PROJECT_VERSION,
+      validate: function (v) {
+        const done = this.async()
+        setTimeout(() => {
+          if (!(!!semver.valid(v))) {
+            done('请输入合法的版本号')
+            return
+          }
+          done(null, true)
+        }, 0)
+      },
+      filter: function (v) {
+        // semver.valid 帮助处理版本号
+        // v1.0.0 => 1.0.0
+        if (semver.valid(v)) {
+          return semver.valid(v)
+        } else {
           return v
         }
       }
-      const projectPrompt = []
-      // 名称不合法或者没输入就注入询问的命令
-      if (!isProjectNameValid) {
-        projectPrompt.push(projectNamePrompt)
-      }
-      // 默认需要的询问
-      projectPrompt.push({
-        type: 'input',
-        name: 'projectVersion',
-        message: '请输入项目版本号',
-        default: '1.0.0',
-        validate: function (v) {
-          const done = this.async()
-          setTimeout(() => {
-            if (!(!!semver.valid(v))) {
-              done('请输入合法的版本号')
-              return
-            }
-            done(null, true)
-          }, 0)
-        },
-        filter: function (v) {
-          // semver.valid 帮助处理版本号
-          // v1.0.0 => 1.0.0
-          if (semver.valid(v)) {
-            return semver.valid(v)
-          } else {
-            return v
-          }
-        }
-      }, {
-        type: 'list',
-        name: 'projectTemplate',
-        message: '请选择项目模板',
+    })
+    // 定义基础询问
+    projectBaseInfo = await inquirer.prompt(projectPrompt)
+
+    // 初始化类型获取
+    const {
+      type
+    } = await inquirer.prompt(prompt.PROJECT_TYPE)
+    // 根据type过滤模板显示
+    this.template = this.template.filter(template => template.tag.includes(type))
+
+    if (type === TYPE_PROJEC) {
+      projectTypeInfo = await inquirer.prompt({
+        ...prompt.PROJECT_TEMPLATE,
         choices: this.createTemplateChoices()
       })
-      // 定义命令行询问
-      const project = await inquirer.prompt(projectPrompt)
-      projectInfo = {
-        type,
-        ...projectInfo,
-        ...project,
-      }
+    } else if (type === TYPE_CUSTOM) {
+      projectTypeInfo = await inquirer.prompt(prompt.FEATURES)
+      projectTypeInfo.projectTemplate = 'yzl-cli-dev-template-vue3'
     }
+
+    projectInfo = {
+      type,
+      ...projectInfo,
+      ...projectBaseInfo,
+      ...projectTypeInfo
+    }
+
     // 生成classname
     if (projectInfo.projectName) {
       projectInfo.name = projectInfo.projectName
@@ -211,6 +192,10 @@ class InitCommand extends Command {
     // version
     if (projectInfo.projectVersion) {
       projectInfo.version = projectInfo.projectVersion
+    }
+    //pluginss
+    if (projectInfo.features) {
+      projectInfo.plugins = projectInfo.features
     }
     return projectInfo
   }
@@ -291,13 +276,12 @@ class InitCommand extends Command {
   async installTemplate() {
     if (this.templateInfo) {
       if (!this.templateInfo.type) {
-        this.templateInfo.type = TEMPLATE_TYPE_NORMAL
+        this.templateInfo.type = TYPE_PROJEC
       }
-      if (this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+      if (this.templateInfo.type === TYPE_PROJEC) {
         // 标准安装
         await this.installNormalTemplate()
-      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
-        //自定义安装
+      } else if (this.templateInfo.type === TYPE_CUSTOM) {
         await this.installCustomTemplate()
       } else {
         throw Error('项目模板类型无法识别！')
@@ -307,8 +291,8 @@ class InitCommand extends Command {
     }
   }
 
-  async installNormalTemplate() {
-    // 拷贝模板代码至当前目录
+  // 拷贝模板代码至当前目录
+  async copyFileToCurrentDir() {
     log.verbose('templateNpm', this.templateNpm)
     let spinner = spinnerStart('正在安装模板...')
     await sleep()
@@ -325,6 +309,45 @@ class InitCommand extends Command {
       spinner.stop(true)
       log.success('模板安装成功')
     }
+  }
+
+  // 自定义安装
+  async installCustomTemplate() {
+    // 拷贝模板
+    await this.copyFileToCurrentDir()
+    const pkg = fse.readFileSync(path.join(process.cwd(), 'package.json'), {
+      encoding: 'utf-8'
+    })
+    // 实例化生成工具
+    const generator = new Generator({
+      pkg: JSON.parse(pkg)
+    })
+    // 注册自定义插件
+    const {
+      features
+    } = this.projectInfo;
+    features.forEach(pluginName => {
+      this.loadModule(pluginName, generator)
+    })
+
+    this.handleEjsRenderInit()
+    this.handleInstallAndRun()
+  }
+
+  loadModule(name, ctx) {
+    const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
+    const plugin = require(pluginPath)
+    new plugin(ctx)
+  }
+
+  // 标准安装
+  async installNormalTemplate() {
+    await this.copyFileToCurrentDir()
+    this.handleEjsRenderInit()
+    this.handleInstallAndRun()
+  }
+  // ejs渲染准备
+  async handleEjsRenderInit() {
     // 要忽略的文件
     const templateIgnore = this.templateInfo.ignore || []
     const ignore = ['**/node_modules/**', ...templateIgnore]
@@ -332,6 +355,9 @@ class InitCommand extends Command {
     await this.ejsRender({
       ignore
     })
+  }
+
+  async handleInstallAndRun() {
     // 依赖安装
     const {
       installCommand,
@@ -340,10 +366,6 @@ class InitCommand extends Command {
     await this.execCommand(installCommand, '依赖安装过程中失败！')
     // 启动执行命令
     await this.execCommand(startCommand, '启动过程中失败！')
-  }
-
-  async installCustomTemplate() {
-    console.log(2)
   }
 
   async execCommand(command, errMsg) {
@@ -385,6 +407,7 @@ class InitCommand extends Command {
     return null
   }
 
+  // ejs渲染
   async ejsRender(options) {
     const dir = process.cwd()
     const projectInfo = this.projectInfo
