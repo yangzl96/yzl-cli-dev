@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/package",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "yzl-cli-dev npm modules",
   "author": "yangzongliu <1065051770@qq.com>",
   "homepage": "https://github.com/yangzongliu/yzl-cli-dev#readme",
@@ -30,7 +30,7 @@
     "@yzl-cli-dev/format-path": "^1.0.7",
     "@yzl-cli-dev/get-npm-info": "^1.1.0",
     "@yzl-cli-dev/log": "^1.1.1",
-    "@yzl-cli-dev/utils": "^1.1.3",
+    "@yzl-cli-dev/utils": "^1.1.4",
     "fs-extra": "^10.1.0",
     "npminstall": "^5.8.1",
     "path-exists": "^4.0.0",
