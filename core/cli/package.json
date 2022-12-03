@@ -7,7 +7,7 @@
   "license": "ISC",
   "main": "lib/index.js",
   "bin": {
-    "lulu": "bin/index.js"
+    "yzl-cli-dev": "bin/index.js"
   },
   "directories": {
     "lib": "lib",

@@ -8,7 +8,7 @@ console.log(1);
 // 判断debugger模式
 log.level = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info'
 // 日志前缀设置
-log.heading = 'lulu:'
+log.heading = 'yzl-cli-dev:'
 // 新增自定义类别
 log.addLevel('success', 2000, {
   fg: 'green',

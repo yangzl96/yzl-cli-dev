@@ -1,4 +1,4 @@
-# lulu-cli
+# yzl-cli-dev-cli
 
 ## Project-setup
 
@@ -16,7 +16,7 @@
 
 **注意:本地依赖可能会出现链接不存在的问题，切换到对应目录，手动执行 npm instal1**
 
-### 注册全局指令 lulu:
+### 注册全局指令 yzl-cli-dev:
 
 `cd core/cli &npm link`
 
