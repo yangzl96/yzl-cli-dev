@@ -18,7 +18,7 @@
     "url": "git+https://github.com/yangzongliu/yzl-cli-dev.git"
   },
   "dependencies": {
-    "@yzl-cli-dev/generator": "file: ../../../../utils/generator"
+    "@yzl-cli-dev/generator": "1.1.6"
   },
   "publishConfig": {
     "access": "public"

@@ -338,11 +338,19 @@ class InitCommand extends Command {
 
   loadModule(name, ctx) {
     // const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
-    const pluginPath = `@yzl-cli-dev/${name}`
+    const pluginName = `@yzl-cli-dev/${name}`
     // log.verbose('pluginPath:', pluginPath)
     // const plugin = require(pluginPath)
-    const plugin = Module.createRequire(pluginPath)
-    new plugin(ctx)
+    const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
+    const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'plugins', 'node_modules')
+    const pluginPackage = new Package({
+      targetPath,
+      storeDir,
+      packageName: pluginName,
+      packageVersion: 'latest'
+    })
+    pluginPackage.install()
+    // new plugin(ctx)
   }
 
   // 标准安装
