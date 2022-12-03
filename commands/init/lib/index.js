@@ -11,6 +11,7 @@ const {
 } = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const Generator = require('@yzl-cli-dev/generator')
+const Module = require('module')
 const path = require('path')
 const userHome = require('user-home')
 const inquirer = require('inquirer')
@@ -315,6 +316,7 @@ class InitCommand extends Command {
   async installCustomTemplate() {
     // 拷贝模板
     await this.copyFileToCurrentDir()
+    log.verbose('pkgPath:', path.join(process.cwd(), 'package.json'))
     const pkg = fse.readFileSync(path.join(process.cwd(), 'package.json'), {
       encoding: 'utf-8'
     })
@@ -330,21 +332,24 @@ class InitCommand extends Command {
       this.loadModule(pluginName, generator)
     })
 
-    this.handleEjsRenderInit()
-    this.handleInstallAndRun()
+    // this.handleEjsRenderInit()
+    // this.handleInstallAndRun()
   }
 
   loadModule(name, ctx) {
-    const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
-    const plugin = require(pluginPath)
+    // const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
+    const pluginPath = `@yzl-cli-dev/${name}`
+    // log.verbose('pluginPath:', pluginPath)
+    // const plugin = require(pluginPath)
+    const plugin = Module.createRequire(pluginPath)
     new plugin(ctx)
   }
 
   // 标准安装
   async installNormalTemplate() {
     await this.copyFileToCurrentDir()
-    this.handleEjsRenderInit()
-    this.handleInstallAndRun()
+    // this.handleEjsRenderInit()
+    // this.handleInstallAndRun()
   }
   // ejs渲染准备
   async handleEjsRenderInit() {
