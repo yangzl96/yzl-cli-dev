@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@yzl-cli-dev/command": "^1.1.1",
-    "@yzl-cli-dev/generator": "file: ../../../../utils/generator",
+    "@yzl-cli-dev/generator": "^1.1.3",
     "@yzl-cli-dev/log": "^1.1.1",
     "@yzl-cli-dev/package": "^1.1.3",
     "@yzl-cli-dev/request": "^1.0.7",
@@ -41,5 +41,5 @@
     "semver": "^7.3.7",
     "user-home": "^3.0.0"
   },
-  "gitHead": "460593aec4edca6aa627af0bd572dd88d6970da6"
+  "gitHead": "5a768d02a5aa0d05072018bf1626b360586fc09d"
 }

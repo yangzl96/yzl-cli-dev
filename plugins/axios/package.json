@@ -20,6 +20,9 @@
   "dependencies": {
     "@yzl-cli-dev/generator": "file: ../../../../utils/generator"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },

@@ -19,13 +19,13 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "gitHead": "460593aec4edca6aa627af0bd572dd88d6970da6",
+  "gitHead": "5a768d02a5aa0d05072018bf1626b360586fc09d",
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
     "@yzl-cli-dev/exec": "^1.1.3",
-    "@yzl-cli-dev/get-npm-info": "file:../../utils/get-npm-info",
+    "@yzl-cli-dev/get-npm-info": "^1.1.0",
     "@yzl-cli-dev/init": "^1.1.3",
     "@yzl-cli-dev/log": "^1.1.1",
     "@yzl-cli-dev/utils": "^1.1.3",

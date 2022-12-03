@@ -17,14 +17,18 @@
     "type": "git",
     "url": "git+https://github.com/yangzongliu/yzl-cli-dev.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@yzl-cli-dev/utils": "file:../utils",
+    "@yzl-cli-dev/utils": "^1.1.3",
     "fs-extra": "^10.1.0"
   },
   "bugs": {
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
-  }
+  },
+  "gitHead": "5a768d02a5aa0d05072018bf1626b360586fc09d"
 }
