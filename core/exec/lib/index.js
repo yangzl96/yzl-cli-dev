@@ -45,6 +45,7 @@ async function exec() {
       packageName,
       packageVersion
     })
+    console.log(pkg);
     if (await pkg.exists()) {
       // 存在的时候 更新 package
       log.verbose('更新 package')

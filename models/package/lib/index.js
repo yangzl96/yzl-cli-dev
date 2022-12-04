@@ -90,6 +90,7 @@ class Package {
 
   // 安装package 这里就是 init 的入口文件
   async install() {
+    console.log('install----------------');
     await this.prepare()
     return npminstall({
       root: this.targetPath,
