@@ -10,7 +10,8 @@ class Generator {
   constructor({
     pkg = {},
   }) {
-    this.originalPkg = pkg
+    console.log('gggggggg------------');
+    // this.originalPkg = pkg
     this.pkg = Object.assign({}, pkg)
     this.targetPath = path.resolve(process.cwd(), 'src')
   }

@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@yzl-cli-dev/command": "^1.1.8",
-    "@yzl-cli-dev/generator": "^1.1.8",
+    "@yzl-cli-dev/generator": "file:../../../../utils/generator",
     "@yzl-cli-dev/log": "^1.1.8",
     "@yzl-cli-dev/package": "^1.1.8",
     "@yzl-cli-dev/request": "^1.1.8",

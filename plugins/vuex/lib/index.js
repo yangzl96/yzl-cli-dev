@@ -16,6 +16,7 @@ class VuexPlugin extends Generator {
         vuex: '^4.0.0'
       }
     })
+    console.log('render temnplate');
     this.generator.render(path.resolve(__dirname, '../template/src'), {})
   }
 }

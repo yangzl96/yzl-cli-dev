@@ -7,11 +7,11 @@ const Package = require('@yzl-cli-dev/package')
 const {
   spinnerStart,
   sleep,
-  execAsync
+  execAsync,
+  exec: spawn
 } = require('@yzl-cli-dev/utils')
 const log = require('@yzl-cli-dev/log')
 const Generator = require('@yzl-cli-dev/generator')
-const Module = require('module')
 const path = require('path')
 const userHome = require('user-home')
 const inquirer = require('inquirer')
@@ -336,20 +336,47 @@ class InitCommand extends Command {
     // this.handleInstallAndRun()
   }
 
-  loadModule(name, ctx) {
+  async loadModule(name, ctx) {
     // const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
     const pluginName = `@yzl-cli-dev/${name}`
     // log.verbose('pluginPath:', pluginPath)
     // const plugin = require(pluginPath)
-    const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
+    // const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'plugins', 'node_modules')
     const pluginPackage = new Package({
-      targetPath,
+      targetPath: process.cwd(),
       storeDir,
       packageName: pluginName,
       packageVersion: 'latest'
     })
-    pluginPackage.install()
+    await pluginPackage.install()
+    const rootFile = pluginPackage.getRootFilePath()
+    const plugin = require(rootFile)
+    new plugin(ctx)
+    return
+    if (rootFile) {
+      try {
+        log.verbose('rootFile', rootFile)
+        const code = `new (require('${rootFile}'))(${JSON.stringify(ctx)})`
+        log.verbose('执行code：' + code)
+        // node -v 'code' 执行脚本
+        const child = spawn('node', ['-e', code], {
+          stdio: 'inherit',
+          cwd: process.cwd(),
+        })
+        child.on('error', e => {
+          log.error(e.message)
+          process.exit(1)
+        })
+        child.on('exit', e => {
+          log.verbose('命令执行成功：' + e)
+          process.exit(e)
+        })
+      } catch (error) {
+        log.error(error.message)
+      }
+    }
+    // const plugin = require(pluginName)
     // new plugin(ctx)
   }
 
