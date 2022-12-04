@@ -49,7 +49,9 @@ class Package {
     }
     // 如果是latest版本 那么去获取对应的版本号
     if (this.packageVersion === 'latest') {
+      console.log('get latest---------');
       this.packageVersion = await getNpmLatestVersion(this.packageName)
+      log.verbose('currentVersion', this.packageVersion)
     }
     log.verbose('currentVersion', this.packageVersion)
   }
