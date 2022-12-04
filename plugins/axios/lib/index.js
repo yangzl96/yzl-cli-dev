@@ -17,7 +17,6 @@ class AxiosPlugin extends Generator {
         axios: '^0.27.2'
       }
     })
-    console.log('render temnplate');
     this.generator.render(path.resolve(__dirname, './template/src'), {})
   }
 }
