@@ -15,6 +15,7 @@ const Generator = require('@yzl-cli-dev/generator')
 const path = require('path')
 const userHome = require('user-home')
 const inquirer = require('inquirer')
+const npminstall = require('npminstall')
 const fse = require('fs-extra')
 const ejs = require('ejs')
 const glob = require('glob')
@@ -338,14 +339,20 @@ class InitCommand extends Command {
 
   async loadModule(name, ctx) {
     const packageName = `@yzl-cli-dev/${name}`
-    const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'plugins', 'node_modules')
     const pluginPackage = new Package({
-      targetPath,
       storeDir,
       packageName,
+      targetPath: process.cwd(),
       packageVersion: 'latest'
     })
+    // await npminstall({
+    //   root: process.cwd(),
+    //   pkgs: [{
+    //     name: packageName,
+    //     version: 'latest'
+    //   }]
+    // })
     await pluginPackage.install()
     const rootFile = pluginPackage.getRootFilePath()
     log.verbose('rootFile', rootFile)

@@ -10,7 +10,6 @@ class Generator {
   constructor({
     pkg = {},
   }) {
-    console.log('gggggggg------------');
     // this.originalPkg = pkg
     this.pkg = Object.assign({}, pkg)
     this.targetPath = path.resolve(process.cwd(), 'src')
@@ -39,6 +38,7 @@ class Generator {
   // 渲染模板
   render(templatePath) {
     console.log('render templatePath:', templatePath);
+    console.log('render targetPath:', this.targetPath);
     try {
       fse.ensureDirSync(templatePath)
       fse.ensureDirSync(this.targetPath)

@@ -143,6 +143,7 @@ class Package {
       return null
     }
     if (this.storeDir) {
+      console.log('走缓存咯----------');
       // 找缓存的
       return _getRootFile(this.cacheFilePath)
     } else {
