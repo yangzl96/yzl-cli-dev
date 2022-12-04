@@ -48,6 +48,7 @@ class Package {
       fse.mkdirpSync(this.storeDir)
     }
     // 如果是latest版本 那么去获取对应的版本号
+    log.verbose('this.packageVersion===latest', this.packageVersion === 'latest')
     if (this.packageVersion === 'latest') {
       console.log('get latest---------');
       this.packageVersion = await getNpmLatestVersion(this.packageName)
