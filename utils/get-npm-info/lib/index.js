@@ -64,9 +64,10 @@ async function getNpmLatestVersion(npmName, registry) {
   let versions = await getNpmVersions(npmName, registry)
   // console.log('getNpmLatestVersion:', versions)
   if (versions) {
+    console.log(versions);
     // 从大到小排序 没有生效
-    // return versions.sort((a, b) => semver.gt(b, a))[0]
-    return versions[versions.length - 1]
+    return versions.sort((a, b) => semver.gt(b, a))[0]
+    // return versions[versions.length - 1]
   }
   return null
 }
@@ -76,4 +77,3 @@ module.exports = {
   getDefaultRegistry,
   getNpmLatestVersion
 };
-
