@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/core",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "yzl-cli-dev core",
   "author": "ex-yangzl <exyangzl@szca.com>",
   "homepage": "",
@@ -19,16 +19,16 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "gitHead": "5a768d02a5aa0d05072018bf1626b360586fc09d",
+  "gitHead": "59946b8ff047aa2d4f49ce38cc0097983c13cbb6",
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@yzl-cli-dev/exec": "^1.1.8",
-    "@yzl-cli-dev/get-npm-info": "^1.1.8",
-    "@yzl-cli-dev/init": "^1.1.9",
-    "@yzl-cli-dev/log": "^1.1.8",
-    "@yzl-cli-dev/utils": "^1.1.8",
+    "@yzl-cli-dev/exec": "^1.1.10",
+    "@yzl-cli-dev/get-npm-info": "^1.1.10",
+    "@yzl-cli-dev/init": "^1.1.10",
+    "@yzl-cli-dev/log": "^1.1.10",
+    "@yzl-cli-dev/utils": "^1.1.10",
     "colors": "^1.4.0",
     "commander": "^9.2.0",
     "dotenv": "^16.0.1",
