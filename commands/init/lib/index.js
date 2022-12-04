@@ -329,14 +329,18 @@ class InitCommand extends Command {
     const {
       features
     } = this.projectInfo;
+    const spinner = spinnerStart('正在下载插件...')
     for (const p in features) {
       await this.loadModule(features[p], generator)
     }
-
-    // this.handleEjsRenderInit()
+    spinner.stop(true)
+    log.success('模板初始化完成')
+    log.info('运行 npm install')
+    this.handleEjsRenderInit()
     // this.handleInstallAndRun()
   }
 
+  // 加载插件
   async loadModule(name, ctx) {
     const packageName = `@yzl-cli-dev/${name}`
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'plugins', 'node_modules')
@@ -346,19 +350,12 @@ class InitCommand extends Command {
       targetPath: process.cwd(),
       packageVersion: 'latest'
     })
-    // await npminstall({
-    //   root: process.cwd(),
-    //   pkgs: [{
-    //     name: packageName,
-    //     version: 'latest'
-    //   }]
-    // })
+
     await pluginPackage.install()
     const rootFile = pluginPackage.getRootFilePath()
     log.verbose('rootFile', rootFile)
     if (rootFile) {
-      const plugin = require(rootFile)
-      await new plugin(ctx)
+      await new(require(rootFile))(ctx)
     }
     return
     if (rootFile) {
@@ -388,7 +385,9 @@ class InitCommand extends Command {
   // 标准安装
   async installNormalTemplate() {
     await this.copyFileToCurrentDir()
-    // this.handleEjsRenderInit()
+    this.handleEjsRenderInit()
+    log.success('模板初始化完成')
+    log.info('运行 npm install')
     // this.handleInstallAndRun()
   }
   // ejs渲染准备
@@ -463,7 +462,6 @@ class InitCommand extends Command {
         ignore: options.ignore,
         nodir: true
       }, (err, files) => {
-        console.log(files);
         if (err) {
           reject(err)
         }

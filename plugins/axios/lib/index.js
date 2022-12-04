@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path')
 const Generator = require('@yzl-cli-dev/generator')
 
 
