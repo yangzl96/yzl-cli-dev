@@ -6,6 +6,7 @@ const Generator = require('@yzl-cli-dev/generator')
 
 class VuexPlugin extends Generator {
   constructor(ctx) {
+    console.log('init vuex');
     super({})
     this.generator = ctx
     this.installPlugin()

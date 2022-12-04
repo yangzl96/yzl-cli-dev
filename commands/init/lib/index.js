@@ -351,6 +351,7 @@ class InitCommand extends Command {
     })
     await pluginPackage.install()
     const rootFile = pluginPackage.getRootFilePath()
+    log.verbose('rootFile', rootFile)
     const plugin = require(rootFile)
     new plugin(ctx)
     return
