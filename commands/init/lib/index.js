@@ -337,23 +337,22 @@ class InitCommand extends Command {
   }
 
   async loadModule(name, ctx) {
-    // const pluginPath = path.resolve(__dirname, `../../../plugins/${name}`)
-    const pluginName = `@yzl-cli-dev/${name}`
-    // log.verbose('pluginPath:', pluginPath)
-    // const plugin = require(pluginPath)
-    // const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
+    const packageName = `@yzl-cli-dev/${name}`
+    const targetPath = path.resolve(userHome, '.yzl-cli-dev', 'plugins')
     const storeDir = path.resolve(userHome, '.yzl-cli-dev', 'plugins', 'node_modules')
     const pluginPackage = new Package({
-      targetPath: process.cwd(),
+      targetPath,
       storeDir,
-      packageName: pluginName,
+      packageName,
       packageVersion: 'latest'
     })
     await pluginPackage.install()
     const rootFile = pluginPackage.getRootFilePath()
     log.verbose('rootFile', rootFile)
-    const plugin = require(rootFile)
-    new plugin(ctx)
+    if (rootFile) {
+      const plugin = require(rootFile)
+      new plugin(ctx)
+    }
     return
     if (rootFile) {
       try {
@@ -377,8 +376,6 @@ class InitCommand extends Command {
         log.error(error.message)
       }
     }
-    // const plugin = require(pluginName)
-    // new plugin(ctx)
   }
 
   // 标准安装
