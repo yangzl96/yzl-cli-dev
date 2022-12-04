@@ -69,7 +69,7 @@ async function getNpmLatestVersion(npmName, registry) {
     console.log(versions.sort((a, b) => semver.gt(b, a))[0]);
     console.log((versions.sort((a, b) => semver.gt(b, a)))[versions.length - 1]);
     // 从大到小排序 没有生效
-    return versions.sort((a, b) => semver.gt(b, a))[0]
+    return (versions.sort((a, b) => semver.gt(b, a)))[versions.length - 1]
     // return versions[versions.length - 1]
   }
   return null
