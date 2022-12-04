@@ -52,7 +52,7 @@ class Package {
     if (this.packageVersion === 'latest') {
       console.log('get latest---------');
       this.packageVersion = await getNpmLatestVersion(this.packageName)
-      log.verbose('currentVersion', this.packageVersion)
+      log.verbose('-latestVersion-', this.packageVersion)
     }
     log.verbose('currentVersion', this.packageVersion)
   }
