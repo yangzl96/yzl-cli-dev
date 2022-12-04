@@ -41,6 +41,7 @@ class Package {
   }
 
   async prepare() {
+    console.log('prepare-------------');
     // 有路径值 但是真实文件不存在
     if (this.storeDir && !pathExists(this.storeDir)) {
       // 将this.storeDir目录 路径上的所有文件都创建出来
@@ -48,13 +49,14 @@ class Package {
       fse.mkdirpSync(this.storeDir)
     }
     // 如果是latest版本 那么去获取对应的版本号
+    console.log(this.packageVersion === 'latest');
     log.verbose('this.packageVersion===latest', this.packageVersion === 'latest')
     if (this.packageVersion === 'latest') {
       console.log('get latest---------');
       this.packageVersion = await getNpmLatestVersion(this.packageName)
       log.verbose('-latestVersion-', this.packageVersion)
     }
-    log.verbose('currentVersion', this.packageVersion)
+    log.verbose('package-currentVersion', this.packageVersion)
   }
 
   // 文件名长这样：_@yzl-cli_init@1.1.2@@yzl-cli/
