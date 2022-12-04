@@ -18,7 +18,7 @@ class VuexPlugin extends Generator {
       }
     })
     console.log('render temnplate');
-    this.generator.render(path.resolve(__dirname, '../template/src'), {})
+    this.generator.render(path.resolve(__dirname, './template/src'), {})
   }
 }
 
