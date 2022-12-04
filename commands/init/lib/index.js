@@ -328,9 +328,9 @@ class InitCommand extends Command {
     const {
       features
     } = this.projectInfo;
-    features.forEach(pluginName => {
-      this.loadModule(pluginName, generator)
-    })
+    for (const p in features) {
+      await this.loadModule(features[p], generator)
+    }
 
     // this.handleEjsRenderInit()
     // this.handleInstallAndRun()
@@ -351,7 +351,7 @@ class InitCommand extends Command {
     log.verbose('rootFile', rootFile)
     if (rootFile) {
       const plugin = require(rootFile)
-      new plugin(ctx)
+      await new plugin(ctx)
     }
     return
     if (rootFile) {

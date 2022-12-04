@@ -21,7 +21,6 @@ class Generator {
     let pkg = this.pkg
     const toMerge = isFunction(fields) ? fields(pkg) : fields
     pkg = this.deepMerge(pkg, toMerge)
-    console.log(pkg);
     fse.writeFileSync(path.resolve(process.cwd(), 'package.json'), JSON.stringify(pkg, null, '\t'))
   }
   // 合并配置
@@ -39,6 +38,7 @@ class Generator {
   }
   // 渲染模板
   render(templatePath) {
+    console.log('render templatePath:', templatePath);
     try {
       fse.ensureDirSync(templatePath)
       fse.ensureDirSync(this.targetPath)

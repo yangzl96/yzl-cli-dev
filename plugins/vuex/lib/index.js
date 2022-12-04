@@ -11,6 +11,7 @@ class VuexPlugin extends Generator {
     this.installPlugin()
   }
   installPlugin() {
+    console.log('install vuex');
     this.generator.extendPackage({
       dependencies: {
         vuex: '^4.0.0'

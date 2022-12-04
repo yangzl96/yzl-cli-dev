@@ -5,14 +5,12 @@ const Generator = require('@yzl-cli-dev/generator')
 
 class AxiosPlugin extends Generator {
   constructor(ctx) {
-    console.log('aaaaaaxios------');
-    console.log(ctx);
     super({})
     this.generator = ctx
     this.installPlugin()
   }
   installPlugin() {
-    console.log('?????????????????????????');
+    console.log('install axios')
     this.generator.extendPackage({
       dependencies: {
         axios: '^0.27.2'
