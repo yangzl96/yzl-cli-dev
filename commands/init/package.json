@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/init",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "yzl-cli-dev init",
   "author": "yangzongliu <1065051770@qq.com>",
   "homepage": "https://github.com/yangzongliu/yzl-cli-dev#readme",
@@ -27,12 +27,12 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
-    "@yzl-cli-dev/command": "^1.1.10",
+    "@yzl-cli-dev/command": "^1.1.11",
     "@yzl-cli-dev/generator": "file:../../../../utils/generator",
-    "@yzl-cli-dev/log": "^1.1.10",
-    "@yzl-cli-dev/package": "^1.1.10",
-    "@yzl-cli-dev/request": "^1.1.10",
-    "@yzl-cli-dev/utils": "^1.1.10",
+    "@yzl-cli-dev/log": "^1.1.11",
+    "@yzl-cli-dev/package": "^1.1.11",
+    "@yzl-cli-dev/request": "^1.1.11",
+    "@yzl-cli-dev/utils": "^1.1.11",
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",
