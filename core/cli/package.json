@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/core",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "yzl-cli-dev core",
   "author": "ex-yangzl <exyangzl@szca.com>",
   "homepage": "",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@yzl-cli-dev/exec": "^1.1.12",
     "@yzl-cli-dev/get-npm-info": "^1.1.12",
-    "@yzl-cli-dev/init": "^1.1.12",
+    "@yzl-cli-dev/init": "^1.1.13",
     "@yzl-cli-dev/log": "^1.1.12",
     "@yzl-cli-dev/utils": "^1.1.12",
     "colors": "^1.4.0",
