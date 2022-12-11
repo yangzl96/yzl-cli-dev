@@ -4,6 +4,7 @@
 
 const Command = require('@yzl-cli-dev/command')
 const Package = require('@yzl-cli-dev/package')
+console.log('11')
 const {
   spinnerStart,
   sleep,
