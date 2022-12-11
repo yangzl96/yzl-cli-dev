@@ -1,6 +1,6 @@
 {
   "name": "@yzl-cli-dev/exec",
-  "version": "1.1.33",
+  "version": "1.1.36-alpha.0",
   "description": "yzl-cli-dev execute package",
   "author": "yangzongliu <1065051770@qq.com>",
   "homepage": "https://github.com/yangzongliu/yzl-cli-dev#readme",
@@ -27,9 +27,9 @@
     "url": "https://github.com/yangzongliu/yzl-cli-dev/issues"
   },
   "dependencies": {
-    "@yzl-cli-dev/log": "^1.1.33",
-    "@yzl-cli-dev/package": "^1.1.33",
-    "@yzl-cli-dev/utils": "^1.1.33"
+    "@yzl-cli-dev/log": "^1.1.36-alpha.0",
+    "@yzl-cli-dev/package": "^1.1.36-alpha.0",
+    "@yzl-cli-dev/utils": "^1.1.36-alpha.0"
   },
   "gitHead": "5a768d02a5aa0d05072018bf1626b360586fc09d"
 }
